@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ProductNotFoundException.class)
-    private ResponseEntity<ProductNotFoundExceptionDto> handleException() {
+    private ResponseEntity<ProductNotFoundExceptionDto> handleProductNotFoundExceptionDto(ProductNotFoundException productNotFoundException) {
         ProductNotFoundExceptionDto productNotFoundExceptionDto = new ProductNotFoundExceptionDto();
-        productNotFoundExceptionDto.setMessage("Product not found for the given id.");
+        productNotFoundExceptionDto.setMessage("Product not found for the given id. "+ productNotFoundException.getId());
         productNotFoundExceptionDto.setResolution("Check the id and try again.");
         return new ResponseEntity<>(
                 productNotFoundExceptionDto,

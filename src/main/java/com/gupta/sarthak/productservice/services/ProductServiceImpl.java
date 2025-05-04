@@ -25,7 +25,7 @@ public class ProductServiceImpl implements ProductService {
                     "https://fakestoreapi.com/products/" + id,
                     FakeStoreProductDto.class);
             if(fakeStoreProductDto == null) {
-                throw new ProductNotFoundException();
+                throw new ProductNotFoundException(id.toString());
             }
             return fromFakeStoreProductDto(fakeStoreProductDto);
     }

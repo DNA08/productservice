@@ -1,6 +1,8 @@
 package com.gupta.sarthak.productservice.controllers;
 
 import com.gupta.sarthak.productservice.dtos.GetProductResponseDto;
+import com.gupta.sarthak.productservice.dtos.ProductNotFoundExceptionDto;
+import com.gupta.sarthak.productservice.exceptions.ProductNotFoundException;
 import com.gupta.sarthak.productservice.models.Product;
 import com.gupta.sarthak.productservice.services.ProductService;
 import org.apache.coyote.Response;
@@ -37,6 +39,16 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(product, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    private ResponseEntity<ProductNotFoundExceptionDto> handleProductNotFoundExceptionDto(ProductNotFoundException exception) {
+        ProductNotFoundExceptionDto productNotFoundExceptionDto = new ProductNotFoundExceptionDto();
+        productNotFoundExceptionDto.setMessage("Product not found for the given "+exception.getId()+" from Controller!!!");
+        productNotFoundExceptionDto.setResolution("Check the id and try again.");
+        return new ResponseEntity<>(
+                productNotFoundExceptionDto,
+                HttpStatus.NOT_FOUND);
     }
 
 //    @PostMapping("/create")

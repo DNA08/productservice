@@ -1,6 +1,7 @@
 package com.gupta.sarthak.productservice.services;
 
 import com.gupta.sarthak.productservice.dtos.FakeStoreProductDto;
+import com.gupta.sarthak.productservice.exceptions.ProductNotFoundException;
 import com.gupta.sarthak.productservice.models.Category;
 import com.gupta.sarthak.productservice.models.Product;
 import org.springframework.stereotype.Service;
@@ -20,16 +21,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getProductById(Long id) {
-        try {
             FakeStoreProductDto fakeStoreProductDto = this.restTemplate.getForObject(
                     "https://fakestoreapi.com/products/" + id,
                     FakeStoreProductDto.class);
+            if(fakeStoreProductDto == null) {
+                throw new ProductNotFoundException();
+            }
             return fromFakeStoreProductDto(fakeStoreProductDto);
-        } catch (UnknownContentTypeException e) {
-            // Log the error and handle the case where the response is not JSON
-            System.err.println("Error fetching product: " + e.getMessage());
-            return null;
-        }
     }
 
 

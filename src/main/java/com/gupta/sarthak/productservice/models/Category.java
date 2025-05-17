@@ -11,6 +11,8 @@ public class Category extends BaseModel{
     @Column(unique = true)
     private String value;
 
+    private String description;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category", cascade = CascadeType.REMOVE)
     private List<Product> products;
 
@@ -26,4 +28,5 @@ public class Category extends BaseModel{
     public void setProducts(List<Product> products) {
         this.products = products;
     }
+
 }

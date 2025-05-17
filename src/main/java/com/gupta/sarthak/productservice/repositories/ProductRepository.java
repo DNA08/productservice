@@ -1,7 +1,10 @@
 package com.gupta.sarthak.productservice.repositories;
 
 import com.gupta.sarthak.productservice.models.Product;
+import com.gupta.sarthak.productservice.repositories.projections.ProductWithTitleAndPrice;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,5 +19,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Override
     List<Product> findAll();
 
+    @Query("select p.title as title, p.price as price from Product p where p.id = :productId")
+    ProductWithTitleAndPrice getProductWithTitleAndPrice(@Param("productId") Long productId);
 
 }

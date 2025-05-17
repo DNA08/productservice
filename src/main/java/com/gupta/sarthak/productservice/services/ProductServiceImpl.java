@@ -1,52 +1,58 @@
 package com.gupta.sarthak.productservice.services;
 
-import com.gupta.sarthak.productservice.dtos.FakeStoreProductDto;
 import com.gupta.sarthak.productservice.exceptions.ProductNotFoundException;
 import com.gupta.sarthak.productservice.models.Category;
 import com.gupta.sarthak.productservice.models.Product;
+import com.gupta.sarthak.productservice.repositories.CategoryRepository;
+import com.gupta.sarthak.productservice.repositories.ProductRepository;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.client.UnknownContentTypeException;
 
+import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@Primary
 public class ProductServiceImpl implements ProductService {
 
-    private final RestTemplate restTemplate;
+    private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
-    public ProductServiceImpl(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository) {
+        this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
     public Product getProductById(Long id) {
-            FakeStoreProductDto fakeStoreProductDto = this.restTemplate.getForObject(
-                    "https://fakestoreapi.com/products/" + id,
-                    FakeStoreProductDto.class);
-            if(fakeStoreProductDto == null) {
-                throw new ProductNotFoundException(id.toString());
-            }
-            return fromFakeStoreProductDto(fakeStoreProductDto);
+        Optional<Product> optionalProduct = this.productRepository.findById(id);
+        return optionalProduct.orElseThrow(() -> new ProductNotFoundException("Product not found for the given id: " + id));
     }
-
-
 
     @Override
     public List<Product> getAllProducts() {
-        FakeStoreProductDto[] fakeStoreProductDtos = this.restTemplate.getForObject("https://fakestoreapi.com/products",
-                FakeStoreProductDto[].class);
-        if (fakeStoreProductDtos == null) {
-            return List.of();
-        }
-        return List.of(fakeStoreProductDtos).stream()
-                .map(this::fromFakeStoreProductDto)
-                .toList();
+        return this.productRepository.findAll();
     }
 
     @Override
-    public void createProduct(Product product) {
-
+    public Product createProduct(Product product) {
+        if(product.getCategory() != null){
+            if(product.getCategory().getId() == null){
+                Category category = product.getCategory();
+                String value = category.getValue();
+                Optional<Category> optionalCategory = this.categoryRepository.findByValue(value);
+                if(optionalCategory.isEmpty()){
+                    category = this.categoryRepository.save(category);
+                    product.setCategory(category);
+                }else{
+                    product.setCategory(optionalCategory.get());
+                }
+            }
+        }else{
+            throw new RuntimeException("Category id " + product.getCategory().getId() + " is already exists");
+        }
+        return this.productRepository.save(product);
     }
 
     @Override
@@ -62,21 +68,5 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void replaceProduct(String id, Product replaceProduct) {
 
-    }
-
-    private Product fromFakeStoreProductDto(FakeStoreProductDto fakeStoreProductDto) {
-        Product product = new Product();
-        if(fakeStoreProductDto == null) {
-            return null;
-        }
-        Category category = new Category();
-        category.setValue(fakeStoreProductDto.getCategory());
-        product.setId(fakeStoreProductDto.getId());
-        product.setTitle(fakeStoreProductDto.getTitle());
-        product.setPrice(fakeStoreProductDto.getPrice().toString());
-        product.setDescription(fakeStoreProductDto.getDescription());
-        product.setImage(fakeStoreProductDto.getImage());
-        product.setCategory(category);
-        return product;
     }
 }

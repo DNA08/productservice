@@ -51,10 +51,11 @@ public class ProductController {
                 HttpStatus.NOT_FOUND);
     }
 
-//    @PostMapping("/create")
-//    public GetProductResponseDto createProduct(String title, String price, String category, String description, String image) {
-//        return new GetProductResponseDto(title, price, category, description, image);
-//    }
+    @PostMapping("/create")
+    public GetProductResponseDto createProduct(@RequestBody Product product) {
+        Product createdProduct = this.productService.createProduct(product);
+        return GetProductResponseDto.fromProduct(createdProduct);
+    }
 
 //    @DeleteMapping("/{id}")
 //    public void deleteProductById(String id) {

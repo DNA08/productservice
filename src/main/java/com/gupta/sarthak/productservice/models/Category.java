@@ -1,7 +1,9 @@
 package com.gupta.sarthak.productservice.models;
 
 
+import jakarta.persistence.Entity;
 
+@Entity
 public class Category extends BaseModel{
 
     private String value;

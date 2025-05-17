@@ -37,21 +37,21 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product createProduct(Product product) {
-        if(product.getCategory() != null){
-            if(product.getCategory().getId() == null){
-                Category category = product.getCategory();
-                String value = category.getValue();
-                Optional<Category> optionalCategory = this.categoryRepository.findByValue(value);
-                if(optionalCategory.isEmpty()){
-                    category = this.categoryRepository.save(category);
-                    product.setCategory(category);
-                }else{
-                    product.setCategory(optionalCategory.get());
-                }
-            }
-        }else{
-            throw new RuntimeException("Category id " + product.getCategory().getId() + " is already exists");
-        }
+//        if(product.getCategory() != null){
+//            if(product.getCategory().getId() == null){
+//                Category category = product.getCategory();
+//                String value = category.getValue();
+//                Optional<Category> optionalCategory = this.categoryRepository.findByValue(value);
+//                if(optionalCategory.isEmpty()){
+//                    category = this.categoryRepository.save(category);
+//                    product.setCategory(category);
+//                }else{
+//                    product.setCategory(optionalCategory.get());
+//                }
+//            }
+//        }else{
+//            throw new RuntimeException("Category id " + product.getCategory().getId() + " is already exists");
+//        }
         return this.productRepository.save(product);
     }
 

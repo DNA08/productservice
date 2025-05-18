@@ -4,6 +4,7 @@ import com.gupta.sarthak.productservice.dtos.FakeStoreProductDto;
 import com.gupta.sarthak.productservice.exceptions.ProductNotFoundException;
 import com.gupta.sarthak.productservice.models.Category;
 import com.gupta.sarthak.productservice.models.Product;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -32,15 +33,16 @@ public class FakeStoreProductServiceImpl implements ProductService {
 
 
     @Override
-    public List<Product> getAllProducts() {
+    public Page<Product> getAllProducts(int pageNumber, int pageSize) {
         FakeStoreProductDto[] fakeStoreProductDtos = this.restTemplate.getForObject("https://fakestoreapi.com/products",
                 FakeStoreProductDto[].class);
-        if (fakeStoreProductDtos == null) {
-            return List.of();
-        }
-        return List.of(fakeStoreProductDtos).stream()
-                .map(this::fromFakeStoreProductDto)
-                .toList();
+//        if (fakeStoreProductDtos == null) {
+//            return List.of();
+//        }
+//        return List.of(fakeStoreProductDtos).stream()
+//                .map(this::fromFakeStoreProductDto)
+//                .toList();
+        return null;
     }
 
     @Override

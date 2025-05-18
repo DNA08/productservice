@@ -6,6 +6,9 @@ import com.gupta.sarthak.productservice.models.Product;
 import com.gupta.sarthak.productservice.repositories.CategoryRepository;
 import com.gupta.sarthak.productservice.repositories.ProductRepository;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
@@ -31,8 +34,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        return this.productRepository.findAll();
+    public Page<Product> getAllProducts(int pageNumber, int pageSize) {
+        return this.productRepository.findAll(
+                PageRequest.of(pageNumber, pageSize, Sort.by("price").ascending())
+        );
     }
 
     @Override

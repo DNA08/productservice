@@ -6,6 +6,7 @@ import com.gupta.sarthak.productservice.exceptions.ProductNotFoundException;
 import com.gupta.sarthak.productservice.models.Product;
 import com.gupta.sarthak.productservice.services.ProductService;
 import org.apache.coyote.Response;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +25,9 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getProducts() {
-        List<Product> products = productService.getAllProducts();
+    public ResponseEntity<Page<Product>> getProducts(@RequestParam int pageNumber,
+                                                     @RequestParam int pageSize) {
+        Page<Product> products = productService.getAllProducts(pageNumber, pageSize);
         if (products.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

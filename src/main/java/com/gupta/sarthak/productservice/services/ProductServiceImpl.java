@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Primary
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
